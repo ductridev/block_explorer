@@ -23,6 +23,8 @@ class JsonEncoder {
   implicit val transactionEdgeEncoder: Encoder[TransactionEdge] = deriveEncoder
   implicit val transactionOriginalEncoder: Encoder[TransactionOriginal] = deriveEncoder
   implicit val lastTransactionRefEncoder: Encoder[LastTransactionRef] = deriveEncoder
+  implicit val balancesEncoder: Encoder[Balances] = deriveEncoder
+  implicit val addressBalanceEncoder: Encoder[AddressBalance] = deriveEncoder
 
   def transactionToJson(transaction: Transaction): Either[Throwable, Json] =
     Try(transaction.asJson.deepDropNullValues).toEither
@@ -35,4 +37,7 @@ class JsonEncoder {
 
   def snapshotToJson(snapshot: Snapshot): Either[Throwable, Json] =
     Try(snapshot.asJson).toEither
+
+  def balancesToJson(balances: Balances): Either[Throwable, Json] =
+    Try(balances.asJson).toEither
 }

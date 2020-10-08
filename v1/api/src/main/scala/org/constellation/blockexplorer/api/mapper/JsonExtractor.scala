@@ -23,6 +23,8 @@ class JsonExtractor {
   implicit val transactionEdgeDecoder: Decoder[TransactionEdge] = deriveDecoder
   implicit val transactionOriginalDecoder: Decoder[TransactionOriginal] = deriveDecoder
   implicit val lastTransactionRefDecoder: Decoder[LastTransactionRef] = deriveDecoder
+  implicit val balancesDecoder: Decoder[Balances] = deriveDecoder
+  implicit val addressBalanceDecoder: Decoder[AddressBalance] = deriveDecoder
 
   def extractTransactionsEsResult(doc: String): Option[Seq[Transaction]] =
     Try(extractTransactions(doc)).toOption
@@ -32,6 +34,9 @@ class JsonExtractor {
 
   def extractSnapshotEsResult(doc: String): Option[Seq[Snapshot]] =
     Try(extractSnapshot(doc)).toOption
+
+  def extractBalancesEsResult(doc: String): Option[Seq[Balances]] =
+    Try(extractBalances(doc)).toOption
 
   private def extractTransactions(doc: String): Seq[Transaction] = {
     val hits: Iterable[Json] = parse(doc).right.get.hcursor.downField("hits").downField("hits").values.get
@@ -49,6 +54,12 @@ class JsonExtractor {
     val hits: Iterable[Json] = parse(doc).right.get.hcursor.downField("hits").downField("hits").values.get
 
     hits.map(_.hcursor.downField("_source").as[CheckpointBlock].right.get).toSeq
+  }
+
+  private def extractBalances(doc: String): Seq[Balances] = {
+    val hits: Iterable[Json] = parse(doc).right.get.hcursor.downField("hits").downField("hits").values.get
+
+    hits.map(_.hcursor.downField("_source").as[Balances].right.get).toSeq
   }
 
 }

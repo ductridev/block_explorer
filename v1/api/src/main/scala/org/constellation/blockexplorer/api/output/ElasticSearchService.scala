@@ -12,6 +12,21 @@ class ElasticSearchService(configLoader: ConfigLoader) {
     JavaClient(ElasticProperties(s"http://${configLoader.elasticsearchUrl}:${configLoader.elasticsearchPort}"))
   )
 
+  def findBalancesForSnapshotHash(hash: String): Response[SearchResponse] =
+    client.execute {
+      search(configLoader.elasticsearchBalancesIndex).query(termQuery("hash", hash)).size(-1)
+    }.await
+
+  def findBalancesForSnapshotHeight(height: Long): Response[SearchResponse] =
+    client.execute {
+      search(configLoader.elasticsearchBalancesIndex).query(termQuery("height", height)).size(-1)
+    }.await
+
+  def findBalancesForLatestSnapshot(): Response[SearchResponse] =
+    client.execute {
+      search(configLoader.elasticsearchBalancesIndex).query(matchAllQuery()).sortByFieldDesc("height").size(1)
+    }.await
+
   def findTransaction(id: String): Response[SearchResponse] =
     client.execute {
       search(configLoader.elasticsearchTransactionsIndex).query(termQuery("hash", id)).size(-1)

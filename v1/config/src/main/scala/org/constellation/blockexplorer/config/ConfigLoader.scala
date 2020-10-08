@@ -20,6 +20,9 @@ class ConfigLoader {
   val elasticsearchTransactionsIndex: String =
     elasticsearch.getString("indexes.transactions")
 
+  val elasticsearchBalancesIndex: String =
+    elasticsearch.getString("indexes.balances")
+
   val elasticsearchCheckpointBlocksIndex: String =
     elasticsearch.getString("indexes.checkpoint-blocks")
 
