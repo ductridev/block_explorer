@@ -84,7 +84,7 @@ export const getMultiQuery = <T, K extends keyof T>(
     sort: getSort<T>(sort),
     query: {
       dis_max: {
-        queries: fields.map((field) => ({ match: { [field.toString()]: value } }))
+        queries: fields.map((field) => ({ match: { [field.toString() + '.keyword']: value } }))
       },
     },
   },
