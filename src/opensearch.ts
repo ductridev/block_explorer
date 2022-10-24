@@ -385,12 +385,33 @@ export const findBalanceByAddress =
         meta,
       })),
       orElse((e: ApplicationError) => {
+        console.log(os.search(
+          getByFieldQuery<OpenSearchBalance, "address">(
+            OSIndex.Balances,
+            "address",
+            address,
+            {
+              options: [
+                {
+                  sortField: "snapshotOrdinal",
+                  // To achieve (0, ordinal> we need to make (0, ordinal + 1)
+                  ...(ordinal !== undefined
+                    ? { searchSince: ordinal + 1 }
+                    : {}),
+                  searchDirection: SearchDirection.Before,
+                },
+              ],
+              size: 1,
+            }
+          )
+        ).then((_e) => {console.log(_e.body.hits)}))
         return e.statusCode === StatusCodes.NOT_FOUND
           ? pipe(
               findSnapshot(os)("latest"),
               map((s) => ({
                 data: { ordinal: s.data.ordinal, balance: 0, address },
                 meta: {},
+                error: { e }
               }))
             )
           : left(e);

@@ -83,10 +83,8 @@ export const getMultiQuery = <T, K extends keyof T>(
     size: sort.size || maxSizeLimit,
     sort: getSort<T>(sort),
     query: {
-      bool: {
-        should: fields.map((field) => ({ term: { [field]: value } })),
-        minimum_should_match: 1,
-        boost: 1.0,
+      dis_max: {
+        queries: fields.map((field) => ({ match: { [field.toString()]: value } }))
       },
     },
   },
@@ -105,8 +103,8 @@ export function getByFieldQuery<T, K extends keyof T>(
       size: sort.size || maxSizeLimit,
       sort: getSort<T>(sort),
       query: {
-        term: {
-          [field]: value,
+        match: {
+          [field.toString() + '.keyword']: value,
         },
       },
     },
