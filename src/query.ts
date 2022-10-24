@@ -117,23 +117,6 @@ export function getByFieldQueryForTransactionsByTermBySnapshot<T, K extends keyo
   value: T[K],
   sort: SortOptions<T>
 ): any {
-  console.log({
-    index,
-    body: {
-      ...getSearchSince<T>(sort),
-      size: sort.size || maxSizeLimit,
-      sort: getSort<T>(sort),
-      query: {
-        match: {
-          [field.toString()]: value,
-        },
-      },
-    },
-  })
-  console.log(getSort<T>(sort))
-  console.log({
-    [field.toString()]: value,
-  })
   return {
     index,
     body: {
