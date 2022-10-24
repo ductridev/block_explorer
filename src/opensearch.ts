@@ -182,7 +182,7 @@ const exportTransactionSortOptions =
               },
               {
                 ...options,
-                sortField: "source",
+                sortField: "source.keyword",
                 searchDirection:
                   options["searchDirection"] || SearchDirection.Before,
               },
